@@ -62,7 +62,11 @@ public class EksamenSBinTre<T> {
     }
 
     public int antall() {
-        return antall;
+        if (!tom()) {
+
+
+
+        }
     }
 
     public String toStringPostOrder() {
@@ -129,6 +133,11 @@ public class EksamenSBinTre<T> {
 
     static <K> EksamenSBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
         throw new UnsupportedOperationException("Ikke kodet ennå!");
+    }
+
+    public static void main(String[] args) {
+        EksamenSBinTre<String> tre = new EksamenSBinTre<>(Comparator.naturalOrder());
+        System.out.println(tre.antall);
     }
 
 
