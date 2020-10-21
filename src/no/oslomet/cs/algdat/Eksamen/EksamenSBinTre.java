@@ -115,8 +115,29 @@ public class EksamenSBinTre<T> {
 
     public int antall(T verdi) {
 
+        //Oppretter en tellevariabel av typen int
 
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        int teller = 0;
+
+        //Setter node til å være øverste node i det binære treet.
+        Node<T> node = rot;
+
+        // while-løkke som går så lenge det er flere noder igjen
+
+        while(node != null) {
+
+           if (comp.compare(node.verdi, verdi) == 0) {
+               node = node.høyre;
+               teller++;
+           }
+           else if (comp.compare(node.verdi, verdi) < 0) {
+               node = node.høyre;
+           }
+           else {
+               node = node.venstre;
+           }
+        }
+        return teller;
     }
 
     public void nullstill() {
@@ -124,11 +145,63 @@ public class EksamenSBinTre<T> {
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+
+        while (p != null) {
+            if (p.venstre != null) {
+                p = p.venstre;
+            }
+            else if (p.høyre != null) {
+                p = p.høyre;
+            }
+            else {
+                return p;
+            }
+        }
+        return null;
     }
 
     private static <T> Node<T> nestePostorden(Node<T> p) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        Node<T> node = p;
+        // Hvis p ikke har en forelder er denne noden roten av treet. Returnerer derfor null
+        if (node.forelder == null) {
+            return null;
+        }
+        //Hvis noden er høyre barn vil forelder til denne noden være den neste noden
+        else if (node == node.forelder.høyre) {
+            return node.forelder;
+        }
+
+        // Hvis den ikke er høyre barn så er den venstre
+
+        else {
+
+            // Sjekker da det finnes et høyre barn - hvis ikke returneres foreldrenoden
+
+            if (node.forelder.høyre == null) {
+                return node.forelder;
+            }
+
+            //Hvis det finnes både høyre og venstre barn så settes noden til å være høyre node
+
+            else {
+                node = node.forelder.høyre;
+
+                // En loop som kjører så lenge det finnes barn på venstre eller høyre
+                while (node.venstre != null || node.høyre != null) {
+
+                    // Sjekker først om det finnes et venstre barn, hvis det gjør det så beveger den seg nedover til siste node i venstre "trebein"
+                    if (node.venstre != null) {
+                        node = node.venstre;
+                    }
+                    // Hvis det ikke er noen venstre node må den bevege seg helt til den treffer den siste høyre node
+                    else {
+                        node = node.høyre;
+                    }
+                }
+                return node;
+            }
+
+        }
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
@@ -139,7 +212,7 @@ public class EksamenSBinTre<T> {
         postordenRecursive(rot, oppgave);
     }
 
-    private void postordenRecursive(Node<T> p, Oppgave<? super T> oppgave) {
+    private void postordenRecursive(Node<T> node, Oppgave<? super T> oppgave) {
         throw new UnsupportedOperationException("Ikke kodet ennå!");
     }
 
