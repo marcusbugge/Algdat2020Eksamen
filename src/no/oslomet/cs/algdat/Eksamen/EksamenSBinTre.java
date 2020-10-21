@@ -175,6 +175,8 @@ public class EksamenSBinTre<T> {
 
         else {
 
+
+
             // Sjekker da det finnes et høyre barn - hvis ikke returneres foreldrenoden
 
             if (node.forelder.høyre == null) {
