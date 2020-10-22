@@ -175,8 +175,6 @@ public class EksamenSBinTre<T> {
 
         else {
 
-
-
             // Sjekker da det finnes et høyre barn - hvis ikke returneres foreldrenoden
 
             if (node.forelder.høyre == null) {
@@ -207,7 +205,7 @@ public class EksamenSBinTre<T> {
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+        System.out.println(nestePostorden(førstePostorden(rot)).verdi);
     }
 
     public void postordenRecursive(Oppgave<? super T> oppgave) {
