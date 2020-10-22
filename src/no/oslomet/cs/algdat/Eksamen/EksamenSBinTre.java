@@ -205,15 +205,25 @@ public class EksamenSBinTre<T> {
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
-        System.out.println(nestePostorden(førstePostorden(rot)).verdi);
+        Node<T> p = førstePostorden(rot);
+        while (p != null) {
+            oppgave.utførOppgave(p.verdi);
+            p = nestePostorden(p);
+        }
     }
 
     public void postordenRecursive(Oppgave<? super T> oppgave) {
         postordenRecursive(rot, oppgave);
     }
 
-    private void postordenRecursive(Node<T> node, Oppgave<? super T> oppgave) {
-        throw new UnsupportedOperationException("Ikke kodet ennå!");
+    private void postordenRecursive(Node<T> p, Oppgave<? super T> oppgave) {
+        if (p.venstre != null) {
+            postordenRecursive(p.venstre, oppgave);
+        }
+        if (p.høyre != null) {
+            postordenRecursive(p.høyre, oppgave);
+        }
+        oppgave.utførOppgave(p.verdi);
     }
 
     public ArrayList<T> serialize() {
