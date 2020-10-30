@@ -4,11 +4,11 @@ package no.oslomet.cs.algdat.Eksamen;
 import java.util.*;
 
 public class EksamenSBinTre<T> {
-    private static final class Node<T>   // en indre nodeklasse
+    private static final class Node<T>                          // en indre nodeklasse
     {
-        private T verdi;                   // nodens verdi
-        private Node<T> venstre, høyre;    // venstre og høyre barn
-        private Node<T> forelder;          // forelder
+        private T verdi;                                        // nodens verdi
+        private Node<T> venstre, høyre;                         // venstre og høyre barn
+        private Node<T> forelder;                               // forelder
 
         // konstruktør
         private Node(T verdi, Node<T> v, Node<T> h, Node<T> forelder) {
@@ -18,7 +18,7 @@ public class EksamenSBinTre<T> {
             this.forelder = forelder;
         }
 
-        private Node(T verdi, Node<T> forelder)  // konstruktør
+        private Node(T verdi, Node<T> forelder)                 // konstruktør
         {
             this(verdi, null, null, forelder);
         }
@@ -30,13 +30,13 @@ public class EksamenSBinTre<T> {
 
     } // class Node
 
-    private Node<T> rot;                            // peker til rotnoden
-    private int antall;                             // antall noder
-    private int endringer;                          // antall endringer
+    private Node<T> rot;                                         // peker til rotnoden
+    private int antall;                                          // antall noder
+    private int endringer;                                       // antall endringer
 
-    private final Comparator<? super T> comp;       // komparator
+    private final Comparator<? super T> comp;                    // komparator
 
-    public EksamenSBinTre(Comparator<? super T> c)    // konstruktør
+    public EksamenSBinTre(Comparator<? super T> c)               // konstruktør
     {
         rot = null;
         antall = 0;
@@ -67,7 +67,7 @@ public class EksamenSBinTre<T> {
 
         StringJoiner s = new StringJoiner(", ", "[", "]");
 
-        Node<T> p = førstePostorden(rot); // går til den første i postorden
+        Node<T> p = førstePostorden(rot);                   // går til den første i postorden
         while (p != null) {
             s.add(p.verdi.toString());
             p = nestePostorden(p);
@@ -80,46 +80,56 @@ public class EksamenSBinTre<T> {
         return antall == 0;
     }
 
-    public boolean leggInn(T verdi) {
+    // Kode tatt fra kompendiet
+    public final boolean leggInn(T verdi)                       // skal ligge i class SBinTre
+    {
         Objects.requireNonNull(verdi, "Ulovlig med nullverdier!");
 
-        Node<T> p = rot, q = null;               // p starter i roten
-        int cmp = 0;                             // hjelpevariabel
+        Node<T> p = rot, q = null;                              // p starter i roten
+        int cmp = 0;                                            // hjelpevariabel
 
-        while (p != null)       // fortsetter til p er ute av treet
+        while (p != null)                                       // fortsetter til p er ute av treet
         {
-            q = p;                                 // q er forelder til p
-            cmp = comp.compare(verdi,p.verdi);     // bruker komparatoren
-            p = cmp < 0 ? p.venstre : p.høyre;     // flytter p
+            q = p;                                              // q er forelder til p
+            cmp = comp.compare(verdi, p.verdi);                 // bruker komparatoren
+            p = cmp < 0 ? p.venstre : p.høyre;                  // flytter p
         }
 
         // p er nå null, dvs. ute av treet, q er den siste vi passerte
 
-        p = new Node<>(verdi, q);                   // oppretter en ny node
+        p = new Node<>(verdi, q);                               // oppretter en ny node
 
-        if (q == null) rot = p;                  // p blir rotnode
-        else if (cmp < 0) q.venstre = p;         // venstre barn til q
-        else q.høyre = p;                        // høyre barn til q
+        if (q == null) rot = p;                                 // p blir rotnode
+        else if (cmp < 0) q.venstre = p;                        // venstre barn til q
+        else q.høyre = p;                                       // høyre barn til q
 
-        antall++;                                // én verdi mer i treet
-        return true;                             // vellykket innlegging
+        antall++;                                               // én verdi mer i treet
+        return true;                                            // vellykket innlegging
     }
 
-    public boolean fjern(T verdi) {
-        if (verdi == null) return false;  // treet har ingen nullverdier
+    // Kode tatt fra kompendiet
+    public boolean fjern(T verdi)                               // hører til klassen SBinTre
+    {
+        if (verdi == null) return false;                        // treet har ingen nullverdier
 
-        Node<T> p = rot, q = null;   // q skal være forelder til p
+        Node<T> p = rot, q = null;                              // q skal være forelder til p
 
-        while (p != null)            // leter etter verdi
+        while (p != null)                                       // leter etter verdi
         {
-            int cmp = comp.compare(verdi,p.verdi);      // sammenligner
-            if (cmp < 0) { q = p; p = p.venstre; }      // går til venstre
-            else if (cmp > 0) { q = p; p = p.høyre; }   // går til høyre
-            else break;    // den søkte verdien ligger i p
+            int cmp = comp.compare(verdi, p.verdi);             // sammenligner
+            if (cmp < 0) {
+                q = p;
+                p = p.venstre;
+            }                                                   // går til venstre
+            else if (cmp > 0) {
+                q = p;
+                p = p.høyre;
+            }                                                   // går til høyre
+            else break;                                         // den søkte verdien ligger i p
         }
-        if (p == null) return false;   // finner ikke verdi
+        if (p == null) return false;                            // finner ikke verdi
 
-        if (p.venstre == null || p.høyre == null)  // Tilfelle 1) og 2)
+        if (p.venstre == null || p.høyre == null)               // Tilfelle 1) og 2)
         {
             Node<T> b = p.venstre != null ? p.venstre : p.høyre;  // b for barn
             if (p == rot) {
@@ -127,161 +137,132 @@ public class EksamenSBinTre<T> {
                 if (rot != null) {
                     rot.forelder = null;
                 }
-            }
-            else if (p == q.venstre) {
+            } else if (p == q.venstre) {
                 q.venstre = b;
                 if (b != null) {
                     b.forelder = q;
                 }
-            }
-            else {
+            } else {
                 q.høyre = b;
                 if (b != null) {
                     b.forelder = q;
                 }
             }
-        }
-        else  // Tilfelle 3)
+        } else                                                // Tilfelle 3)
         {
-            Node<T> s = p, r = p.høyre;   // finner neste i inorden
-            while (r.venstre != null)
-            {
-                s = r;    // s er forelder til r
+            Node<T> s = p, r = p.høyre;                         // finner neste i inorden
+            while (r.venstre != null) {
+                s = r;                                          // s er forelder til r
                 r = r.venstre;
             }
 
-            p.verdi = r.verdi;   // kopierer verdien i r til p
+            p.verdi = r.verdi;                                  // kopierer verdien i r til p
 
             if (s != p) s.venstre = r.høyre;
             else s.høyre = r.høyre;
         }
 
-        antall--;   // det er nå én node mindre i treet
+        antall--;                                               // det er nå én node mindre i treet
         return true;
     }
 
     public int fjernAlle(T verdi) {
-        int antallNoderFjernet = 0;
+        int antallNoderFjernet = 0;                             // teller
+        Node<T> node = rot;                                     // starter i rot
 
-        Node<T> node = førstePostorden(rot);
-        while (node != null) {
-            System.out.println("Verdi: "+node.verdi);
-            if (node.verdi.equals(verdi)) {
-                fjern(verdi);
+        while (node != null) {                                  // loop som går så lenge det er node er tilgjenelig
+            if (comp.compare(node.verdi, verdi) == 0) {         // sammenligner
+                node = node.høyre;                              // går mot høyre
+                fjern(verdi);                                   // fjerner verdi
+                antallNoderFjernet++;                           // øker antall noder som er fjernet med en
+            } else if (comp.compare(node.verdi, verdi) < 0) {   // sammenligner
+                node = node.høyre;                              // går mot høyre
+            } else {
+                node = node.venstre;                            // hvis ikke den går mot høyre - går den mot venstre
             }
-
-            antallNoderFjernet++;
-            node = nestePostorden(node);
         }
-        return antallNoderFjernet;
+        return antallNoderFjernet;                              // returnerer antall noder som er blitt fjernet
     }
 
     public int antall(T verdi) {
 
-        //Oppretter en tellevariabel av typen int
+        int teller = 0;                                         // teller av typen int
+        Node<T> node = rot;                                     // starter i roten
 
-        int teller = 0;
-
-        //Setter node til å være øverste node i det binære treet.
-        Node<T> node = rot;
-
-        // while-løkke som går så lenge det er flere noder igjen
-
-        while(node != null) {
-
-           if (comp.compare(node.verdi, verdi) == 0) {
-               node = node.høyre;
-               teller++;
-           }
-           else if (comp.compare(node.verdi, verdi) < 0) {
-               node = node.høyre;
-           }
-           else {
-               node = node.venstre;
-           }
+        while (node != null) {                                  // loop
+            if (comp.compare(node.verdi, verdi) == 0) {         // sammenligner
+                node = node.høyre;                              // går mot høyre
+                teller++;                                       // øker teller med 1
+            } else if (comp.compare(node.verdi, verdi) < 0) {   // sammenligner
+                node = node.høyre;                              // går møt høyre
+            } else {
+                node = node.venstre;                            // går mot venstre
+            }
         }
-        return teller;
+        return teller;                                          // returnerer antall noder i listen
     }
 
     public void nullstill() {
 
-        // Looper igjennom hele treet og fjerner begge barn - hvis de har.
-        Node<T> node = førstePostorden(rot);
-        while (node != null) {
+        Node<T> node = førstePostorden(rot);                    // starter i første postorden
+        while (node != null) {                                  // loop
 
-            if (node == rot) {
-                rot = null;
-            }
-            else if (node.venstre != null) {
-                node.venstre = null;
-            }
-            else if (node.høyre != null) {
-                node.høyre = null;
+            if (node == rot) {                                  // når søkealgoritmen er på roten er den på det siste elementet
+                rot = null;                                     // og derfor setter den til null
+            } else if (node.venstre != null) {
+                node.venstre = null;                            // går mot venstre
+            } else if (node.høyre != null) {
+                node.høyre = null;                              // går mot høyre
             }
 
-            node = nestePostorden(node);
-            antall--;
+            node = nestePostorden(node);                        // hopper til neste node i postorden rekkefølge
+            antall--;                                           // reduserer antall med 1
         }
     }
 
     private static <T> Node<T> førstePostorden(Node<T> p) {
 
-        while (p != null) {
+        while (p != null) {                                     // loop
             if (p.venstre != null) {
-                p = p.venstre;
-            }
-            else if (p.høyre != null) {
-                p = p.høyre;
-            }
-            else {
-                return p;
+                p = p.venstre;                                  // går mot venstre hvis venstre node er tilgjengelig
+            } else if (p.høyre != null) {                       // hvis det ikke er flere venstre noder sjekker den høyre
+                p = p.høyre;                                    // går mot høyre
+            } else {
+                return p;                                       // returnerer noden hvis det ikke er flere venstre eller høyre noder
             }
         }
         return null;
     }
 
     private static <T> Node<T> nestePostorden(Node<T> p) {
-        Node<T> node = p;
-        // Hvis p ikke har en forelder er denne noden roten av treet. Returnerer derfor null
-        if (node.forelder == null) {
-            return null;
-        }
-        //Hvis noden er høyre barn vil forelder til denne noden være den neste noden
-        else if (node == node.forelder.høyre) {
-            return node.forelder;
-        }
-        // Hvis den ikke er høyre barn så er den venstre
-        else {
-            // Sjekker da det finnes et høyre barn - hvis ikke returneres foreldrenoden
-            if (node.forelder.høyre == null) {
-                return node.forelder;
-            }
-            //Hvis det finnes både høyre og venstre barn så settes noden til å være høyre node
-            else {
-                node = node.forelder.høyre;
+        Node<T> node = p;                                       // starter i p
 
-                // En loop som kjører så lenge det finnes barn på venstre eller høyre
-                while (node.venstre != null || node.høyre != null) {
-
-                    // Sjekker først om det finnes et venstre barn, hvis det gjør det så beveger den seg nedover til siste node i venstre "trebein"
-                    if (node.venstre != null) {
+        if (node.forelder == null) {                            // hvis node sin forelder er lik null
+            return null;                                        // returner null
+        } else if (node == node.forelder.høyre) {               // sjekker om node er høyre barn
+            return node.forelder;                               // returnerer node sin forelder
+        } else {
+            if (node.forelder.høyre == null) {                  // sjekker om venstre barn er enebarn
+                return node.forelder;                           // returnerer forelder som neste
+            } else {                                            // hvis begge barn er tilgjenelig
+                node = node.forelder.høyre;                     // hopper over til høyre barn
+                while (node.venstre != null || node.høyre != null) {    // loop
+                    if (node.venstre != null) {                 // beveger seg mot venstre
                         node = node.venstre;
-                    }
-                    // Hvis det ikke er noen venstre node må den bevege seg helt til den treffer den siste høyre node
-                    else {
-                        node = node.høyre;
+                    } else {
+                        node = node.høyre;                      // hvis ikke - mot høyre
                     }
                 }
-                return node;
+                return node;                                    // returnerer node
             }
         }
     }
 
     public void postorden(Oppgave<? super T> oppgave) {
-        Node<T> p = førstePostorden(rot);
-        while (p != null) {
-            oppgave.utførOppgave(p.verdi);
-            p = nestePostorden(p);
+        Node<T> p = førstePostorden(rot);                       // starter i første postorden
+        while (p != null) {                                     // loop
+            oppgave.utførOppgave(p.verdi);                      // "skriver" ut verdien til p
+            p = nestePostorden(p);                              // hopper til neste node
         }
     }
 
@@ -290,30 +271,30 @@ public class EksamenSBinTre<T> {
     }
 
     private void postordenRecursive(Node<T> p, Oppgave<? super T> oppgave) {
-        if (p.venstre != null) {
-            postordenRecursive(p.venstre, oppgave);
+        if (p.venstre != null) {                                // hvis p.venstre ikke er null
+            postordenRecursive(p.venstre, oppgave);             // kjører metoden på nytt og hopper til venstre
         }
-        if (p.høyre != null) {
-            postordenRecursive(p.høyre, oppgave);
+        if (p.høyre != null) {                                  // hvis p sin høyre ikke er null
+            postordenRecursive(p.høyre, oppgave);               // kjører metoden på nytt og hopper til høyre
         }
-        oppgave.utførOppgave(p.verdi);
+        oppgave.utførOppgave(p.verdi);                          // "skriver" ut verdien til p
     }
 
     public ArrayList<T> serialize() {
 
-        Node<T> p = rot;
-        ArrayList<T> arrayList = new ArrayList<>();
-        Queue<Node<T>> queue = new ArrayDeque<>();
-        queue.add(p);
+        Node<T> p = rot;                                        // starter i roten
+        ArrayList<T> arrayList = new ArrayList<>();             // oppretter en arraylist
+        Queue<Node<T>> queue = new ArrayDeque<>();              // oppretter et queue
+        queue.add(p);                                           // adder første node i køen
 
-        while (!queue.isEmpty()) {
-            p = queue.poll();
-            arrayList.add(p.verdi);
+        while (!queue.isEmpty()) {                              // loop som går lenge det er elementer i køen
+            p = queue.poll();                                   // dytter ut første verdi og legger inn en ny
+            arrayList.add(p.verdi);                             // adder node sin verdi i listen
             if (p.venstre != null) {
-                queue.add(p.venstre);
+                queue.add(p.venstre);                           // går mot venstre og adder noden i køen
             }
             if (p.høyre != null) {
-                queue.add(p.høyre);
+                queue.add(p.høyre);                             // går mot høyre og adder noden i køen
             }
         }
         return arrayList;
@@ -322,17 +303,9 @@ public class EksamenSBinTre<T> {
     static <K> EksamenSBinTre<K> deserialize(ArrayList<K> data, Comparator<? super K> c) {
         EksamenSBinTre<K> nodeTre = new EksamenSBinTre<>(c);
 
-        for (K nodeVerdi : data) {
-            nodeTre.leggInn(nodeVerdi);
+        for (K nodeVerdi : data) {                              // loop som går itererer så mange elementer det er i listen
+            nodeTre.leggInn(nodeVerdi);                         // legger noden i treet
         }
-
         return nodeTre;
-        }
-
-
-    public static void main(String[] args) {
-
     }
-
-
-} // ObligSBinTre
+}
